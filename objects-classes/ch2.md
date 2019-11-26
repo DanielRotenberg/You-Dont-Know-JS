@@ -409,7 +409,7 @@ The fourth and final rule for `this` binding requires us to re-think a very comm
 In traditional class-oriented languages, "constructors" are special methods attached to classes, that when the class is instantiated with a `new` operator, the constructor of that class is called. This usually looks something like:
 
 ```js
-something = new MyClass(..);
+something = new SomeClass(..);
 ```
 
 JavaScript has a `new` operator, and the code pattern to use it looks basically identical to what we see in those class-oriented languages; most developers assume that JavaScript's mechanism is doing something similar. However, there really is *no connection* to class-oriented functionality implied by `new` usage in JS.
