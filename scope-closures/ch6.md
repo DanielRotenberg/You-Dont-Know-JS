@@ -488,7 +488,7 @@ By retaining an inner reference to the public API object inside your module inst
 Various module dependency loaders/managers essentially wrap up this pattern of module definition into a friendly API. Rather than examine any one particular library, let me present a *very simple* proof of concept **for illustration purposes (only)**:
 
 ```js
-var MyModules = (function Manager() {
+var ModulesExample = (function Manager() {
     var modules = {};
 
     function define(name, deps, impl) {
@@ -514,7 +514,7 @@ The key part of this code is `modules[name] = impl.apply(impl, deps)`. This is i
 And here's how I might use it to define some modules:
 
 ```js
-MyModules.define( "bar", [], function(){
+ModulesExample.define( "bar", [], function(){
     function hello(who) {
         return "Let me introduce: " + who;
     }
@@ -524,7 +524,7 @@ MyModules.define( "bar", [], function(){
     };
 } );
 
-MyModules.define( "foo", ["bar"], function(bar){
+ModulesExample.define( "foo", ["bar"], function(bar){
     var hungry = "hippo";
 
     function awesome() {
@@ -536,9 +536,9 @@ MyModules.define( "foo", ["bar"], function(bar){
     };
 } );
 
-var bar = MyModules.get( "bar" );
+var bar = ModulesExample.get( "bar" );
 var foo = MyModules.get( "foo" );
-
+ModulesExample
 console.log(
     bar.hello( "hippo" )
 ); // Let me introduce: hippo
