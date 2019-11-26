@@ -157,7 +157,7 @@ Such libraries typically will create a single variable declaration, often an obj
 For example:
 
 ```js
-var MyReallyCoolLibrary = {
+var ReallyCoolLibraryExample = {
     awesome: "stuff",
     doSomething: function() {
         // ...
