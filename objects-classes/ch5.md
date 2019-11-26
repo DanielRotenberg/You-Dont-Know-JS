@@ -38,11 +38,11 @@ Objects in JavaScript have an internal property, denoted in the specification as
 Consider:
 
 ```js
-var myObject = {
+var someObject = {
 	a: 2
 };
 
-myObject.a; // 2
+someObject.a; // 2
 ```
 
 What is the `[[Prototype]]` reference used for? In Chapter 3, we examined the `[[Get]]` operation that is invoked when you reference a property on an object, such as `myObject.a`. For that default `[[Get]]` operation, the first step is to check if the object itself has a property `a` on it, and if so, it's used.
@@ -59,14 +59,14 @@ var anotherObject = {
 };
 
 // create an object linked to `anotherObject`
-var myObject = Object.create( anotherObject );
+var someObject = Object.create( anotherObject );
 
-myObject.a; // 2
+someObject.a; // 2
 ```
 
 **Note:** We will explain what `Object.create(..)` does, and how it operates, shortly. For now, just assume it creates an object with the `[[Prototype]]` linkage we're examining to the object specified.
 
-So, we have `myObject` that is now `[[Prototype]]` linked to `anotherObject`. Clearly `myObject.a` doesn't actually exist, but nevertheless, the property access succeeds (being found on `anotherObject` instead) and indeed finds the value `2`.
+So, we have `someObject` that is now `[[Prototype]]` linked to `anotherObject`. Clearly `someObject.a` doesn't actually exist, but nevertheless, the property access succeeds (being found on `anotherObject` instead) and indeed finds the value `2`.
 
 But, if `a` weren't found on `anotherObject` either, its `[[Prototype]]` chain, if non-empty, is again consulted and followed.
 
@@ -80,14 +80,14 @@ var anotherObject = {
 };
 
 // create an object linked to `anotherObject`
-var myObject = Object.create( anotherObject );
+var someObject = Object.create( anotherObject );
 
-for (var k in myObject) {
+for (var k in someObject) {
 	console.log("found: " + k);
 }
 // found: a
 
-("a" in myObject); // true
+("a" in someObject); // true
 ```
 
 So, the `[[Prototype]]` chain is consulted, one link at a time, when you perform property look-ups in various fashions. The look-up stops once the property is found or the chain ends.
@@ -105,28 +105,28 @@ Some utilities found here you may be familiar with include `.toString()` and `.v
 Back in Chapter 3, we mentioned that setting properties on an object was more nuanced than just adding a new property to the object or changing an existing property's value. We will now revisit this situation more completely.
 
 ```js
-myObject.foo = "bar";
+someObject.foo = "bar";
 ```
 
-If the `myObject` object already has a normal data accessor property called `foo` directly present on it, the assignment is as simple as changing the value of the existing property.
+If the `someObject` object already has a normal data accessor property called `foo` directly present on it, the assignment is as simple as changing the value of the existing property.
 
-If `foo` is not already present directly on `myObject`, the `[[Prototype]]` chain is traversed, just like for the `[[Get]]` operation. If `foo` is not found anywhere in the chain, the property `foo` is added directly to `myObject` with the specified value, as expected.
+If `foo` is not already present directly on `someObject`, the `[[Prototype]]` chain is traversed, just like for the `[[Get]]` operation. If `foo` is not found anywhere in the chain, the property `foo` is added directly to `someObject` with the specified value, as expected.
 
-However, if `foo` is already present somewhere higher in the chain, nuanced (and perhaps surprising) behavior can occur with the `myObject.foo = "bar"` assignment. We'll examine that more in just a moment.
+However, if `foo` is already present somewhere higher in the chain, nuanced (and perhaps surprising) behavior can occur with the `someObject.foo = "bar"` assignment. We'll examine that more in just a moment.
 
-If the property name `foo` ends up both on `myObject` itself and at a higher level of the `[[Prototype]]` chain that starts at `myObject`, this is called *shadowing*. The `foo` property directly on `myObject` *shadows* any `foo` property which appears higher in the chain, because the `myObject.foo` look-up would always find the `foo` property that's lowest in the chain.
+If the property name `foo` ends up both on `someObject` itself and at a higher level of the `[[Prototype]]` chain that starts at `someObject`, this is called *shadowing*. The `foo` property directly on `someObject` *shadows* any `foo` property which appears higher in the chain, because the `someObject.foo` look-up would always find the `foo` property that's lowest in the chain.
 
-As we just hinted, shadowing `foo` on `myObject` is not as simple as it may seem. We will now examine three scenarios for the `myObject.foo = "bar"` assignment when `foo` is **not** already on `myObject` directly, but **is** at a higher level of `myObject`'s `[[Prototype]]` chain:
+As we just hinted, shadowing `foo` on `someObject` is not as simple as it may seem. We will now examine three scenarios for the `someObject.foo = "bar"` assignment when `foo` is **not** already on `someObject` directly, but **is** at a higher level of `someObject`'s `[[Prototype]]` chain:
 
-1. If a normal data accessor (see Chapter 3) property named `foo` is found anywhere higher on the `[[Prototype]]` chain, **and it's not marked as read-only (`writable:false`)** then a new property called `foo` is added directly to `myObject`, resulting in a **shadowed property**.
-2. If a `foo` is found higher on the `[[Prototype]]` chain, but it's marked as **read-only (`writable:false`)**, then both the setting of that existing property as well as the creation of the shadowed property on `myObject` **are disallowed**. If the code is running in `strict mode`, an error will be thrown. Otherwise, the setting of the property value will silently be ignored. Either way, **no shadowing occurs**.
-3. If a `foo` is found higher on the `[[Prototype]]` chain and it's a setter (see Chapter 3), then the setter will always be called. No `foo` will be added to (aka, shadowed on) `myObject`, nor will the `foo` setter be redefined.
+1. If a normal data accessor (see Chapter 3) property named `foo` is found anywhere higher on the `[[Prototype]]` chain, **and it's not marked as read-only (`writable:false`)** then a new property called `foo` is added directly to `someObject`, resulting in a **shadowed property**.
+2. If a `foo` is found higher on the `[[Prototype]]` chain, but it's marked as **read-only (`writable:false`)**, then both the setting of that existing property as well as the creation of the shadowed property on `someObject` **are disallowed**. If the code is running in `strict mode`, an error will be thrown. Otherwise, the setting of the property value will silently be ignored. Either way, **no shadowing occurs**.
+3. If a `foo` is found higher on the `[[Prototype]]` chain and it's a setter (see Chapter 3), then the setter will always be called. No `foo` will be added to (aka, shadowed on) `someObject`, nor will the `foo` setter be redefined.
 
 Most developers assume that assignment of a property (`[[Put]]`) will always result in shadowing if the property already exists higher on the `[[Prototype]]` chain, but as you can see, that's only true in one (#1) of the three situations just described.
 
-If you want to shadow `foo` in cases #2 and #3, you cannot use `=` assignment, but must instead use `Object.defineProperty(..)` (see Chapter 3) to add `foo` to `myObject`.
+If you want to shadow `foo` in cases #2 and #3, you cannot use `=` assignment, but must instead use `Object.defineProperty(..)` (see Chapter 3) to add `foo` to `someObject`.
 
-**Note:** Case #2 may be the most surprising of the three. The presence of a *read-only* property prevents a property of the same name being implicitly created (shadowed) at a lower level of a `[[Prototype]]` chain. The reason for this restriction is primarily to reinforce the illusion of class-inherited properties. If you think of the `foo` at a higher level of the chain as having been inherited (copied down) to `myObject`, then it makes sense to enforce the non-writable nature of that `foo` property on `myObject`. If you however separate the illusion from the fact, and recognize that no such inheritance copying *actually* occurred (see Chapters 4 and 5), it's a little unnatural that `myObject` would be prevented from having a `foo` property just because some other object had a non-writable `foo` on it. It's even stranger that this restriction only applies to `=` assignment, but is not enforced when using `Object.defineProperty(..)`.
+**Note:** Case #2 may be the most surprising of the three. The presence of a *read-only* property prevents a property of the same name being implicitly created (shadowed) at a lower level of a `[[Prototype]]` chain. The reason for this restriction is primarily to reinforce the illusion of class-inherited properties. If you think of the `foo` at a higher level of the chain as having been inherited (copied down) to `someObject`, then it makes sense to enforce the non-writable nature of that `foo` property on `someObject`. If you however separate the illusion from the fact, and recognize that no such inheritance copying *actually* occurred (see Chapters 4 and 5), it's a little unnatural that `someObject` would be prevented from having a `foo` property just because some other object had a non-writable `foo` on it. It's even stranger that this restriction only applies to `=` assignment, but is not enforced when using `Object.defineProperty(..)`.
 
 Shadowing with **methods** leads to ugly *explicit pseudo-polymorphism* (see Chapter 4) if you need to delegate between them. Usually, shadowing is more complicated and nuanced than it's worth, **so you should try to avoid it if possible**. See Chapter 6 for an alternative design pattern, which among other things discourages shadowing in favor of cleaner alternatives.
 
@@ -137,23 +137,23 @@ var anotherObject = {
 	a: 2
 };
 
-var myObject = Object.create( anotherObject );
+var someObject = Object.create( anotherObject );
 
 anotherObject.a; // 2
-myObject.a; // 2
+someObject.a; // 2
 
 anotherObject.hasOwnProperty( "a" ); // true
-myObject.hasOwnProperty( "a" ); // false
+someObject.hasOwnProperty( "a" ); // false
 
-myObject.a++; // oops, implicit shadowing!
+someObject.a++; // oops, implicit shadowing!
 
 anotherObject.a; // 2
-myObject.a; // 3
+someObject.a; // 3
 
-myObject.hasOwnProperty( "a" ); // true
+someObject.hasOwnProperty( "a" ); // true
 ```
 
-Though it may appear that `myObject.a++` should (via delegation) look-up and just increment the `anotherObject.a` property itself *in place*, instead the `++` operation corresponds to `myObject.a = myObject.a + 1`. The result is `[[Get]]` looking up `a` property via `[[Prototype]]` to get the current value `2` from `anotherObject.a`, incrementing the value by one, then `[[Put]]` assigning the `3` value to a new shadowed property `a` on `myObject`. Oops!
+Though it may appear that `someObject.a++` should (via delegation) look-up and just increment the `anotherObject.a` property itself *in place*, instead the `++` operation corresponds to `myObject.a = someObject.a + 1`. The result is `[[Get]]` looking up `a` property via `[[Prototype]]` to get the current value `2` from `anotherObject.a`, incrementing the value by one, then `[[Put]]` assigning the `3` value to a new shadowed property `a` on `someObject`. Oops!
 
 Be very careful when dealing with delegated properties that you modify. If you wanted to increment `anotherObject.a`, the only proper way is `anotherObject.a++`.
 
@@ -316,22 +316,22 @@ function Foo(name) {
 	this.name = name;
 }
 
-Foo.prototype.myName = function() {
+Foo.prototype.someName = function() {
 	return this.name;
 };
 
 var a = new Foo( "a" );
 var b = new Foo( "b" );
 
-a.myName(); // "a"
-b.myName(); // "b"
+a.someName(); // "a"
+b.someName(); // "b"
 ```
 
 This snippet shows two additional "class-orientation" tricks in play:
 
 1. `this.name = name`: adds the `.name` property onto each object (`a` and `b`, respectively; see Chapter 2 about `this` binding), similar to how class instances encapsulate data values.
 
-2. `Foo.prototype.myName = ...`: perhaps the more interesting technique, this adds a property (function) to the `Foo.prototype` object. Now, `a.myName()` works, but perhaps surprisingly. How?
+2. `Foo.prototype.someName = ...`: perhaps the more interesting technique, this adds a property (function) to the `Foo.prototype` object. Now, `a.someName()` works, but perhaps surprisingly. How?
 
 In the above snippet, it's strongly tempting to think that when `a` and `b` are created, the properties/functions on the `Foo.prototype` object are *copied* over to each of `a` and `b` objects. **However, that's not what happens.**
 
@@ -418,7 +418,7 @@ function Foo(name) {
 	this.name = name;
 }
 
-Foo.prototype.myName = function() {
+Foo.prototype.someName = function() {
 	return this.name;
 };
 
@@ -435,14 +435,14 @@ Bar.prototype = Object.create( Foo.prototype );
 // and might need to be manually "fixed" if you're
 // in the habit of relying on such properties!
 
-Bar.prototype.myLabel = function() {
+Bar.prototype.someLabel = function() {
 	return this.label;
 };
 
 var a = new Bar( "a", "obj a" );
 
-a.myName(); // "a"
-a.myLabel(); // "obj a"
+a.someName(); // "a"
+a.someLabel(); // "obj a"
 ```
 
 **Note:** To understand why `this` points to `a` in the above code snippet, see Chapter 2.
@@ -661,7 +661,7 @@ var anotherObject = {
 	a: 2
 };
 
-var myObject = Object.create( anotherObject, {
+var someObject = Object.create( anotherObject, {
 	b: {
 		enumerable: false,
 		writable: true,
@@ -676,13 +676,13 @@ var myObject = Object.create( anotherObject, {
 	}
 } );
 
-myObject.hasOwnProperty( "a" ); // false
-myObject.hasOwnProperty( "b" ); // true
-myObject.hasOwnProperty( "c" ); // true
+someObject.hasOwnProperty( "a" ); // false
+someObject.hasOwnProperty( "b" ); // true
+someObject.hasOwnProperty( "c" ); // true
 
-myObject.a; // 2
-myObject.b; // 3
-myObject.c; // 4
+someObject.a; // 2
+someObject.b; // 3
+someObject.c; // 4
 ```
 
 The second argument to `Object.create(..)` specifies property names to add to the newly created object, via declaring each new property's *property descriptor* (see Chapter 3). Because polyfilling property descriptors into pre-ES5 is not possible, this additional functionality on `Object.create(..)` also cannot be polyfilled.
@@ -702,9 +702,9 @@ var anotherObject = {
 	a: 2
 };
 
-var myObject = createAndLinkObject( anotherObject );
+var someObject = createAndLinkObject( anotherObject );
 
-myObject.a; // 2
+someObject.a; // 2
 ```
 
 I do not share this strict opinion. I fully endorse the common partial-polyfill of `Object.create(..)` as shown above, and using it in your code even in pre-ES5. I'll leave it to you to make your own decision.
@@ -722,9 +722,9 @@ var anotherObject = {
 	}
 };
 
-var myObject = Object.create( anotherObject );
+var someObject = Object.create( anotherObject );
 
-myObject.cool(); // "cool!"
+someObject.cool(); // "cool!"
 ```
 
 That code will work by virtue of `[[Prototype]]`, but if you wrote it that way so that `anotherObject` was acting as a fallback **just in case** `myObject` couldn't handle some property/method that some developer may try to call, odds are that your software is going to be a bit more "magical" and harder to understand and maintain.
@@ -735,7 +735,7 @@ That's not to say there aren't cases where fallbacks are an appropriate design p
 
 **Don't miss an important but nuanced point here.**
 
-Designing software where you intend for a developer to, for instance, call `myObject.cool()` and have that work even though there is no `cool()` method on `myObject` introduces some "magic" into your API design that can be surprising for future developers who maintain your software.
+Designing software where you intend for a developer to, for instance, call `someObject.cool()` and have that work even though there is no `cool()` method on `someObject` introduces some "magic" into your API design that can be surprising for future developers who maintain your software.
 
 You can however design your API with less "magic" to it, but still take advantage of the power of `[[Prototype]]` linkage.
 
@@ -746,16 +746,16 @@ var anotherObject = {
 	}
 };
 
-var myObject = Object.create( anotherObject );
+var someObject = Object.create( anotherObject );
 
-myObject.doCool = function() {
+someObject.doCool = function() {
 	this.cool(); // internal delegation!
 };
 
-myObject.doCool(); // "cool!"
+someObject.doCool(); // "cool!"
 ```
 
-Here, we call `myObject.doCool()`, which is a method that *actually exists* on `myObject`, making our API design more explicit (less "magical"). *Internally*, our implementation follows the **delegation design pattern** (see Chapter 6), taking advantage of `[[Prototype]]` delegation to `anotherObject.cool()`.
+Here, we call `someObject.doCool()`, which is a method that *actually exists* on `someObject`, making our API design more explicit (less "magical"). *Internally*, our implementation follows the **delegation design pattern** (see Chapter 6), taking advantage of `[[Prototype]]` delegation to `anotherObject.cool()`.
 
 In other words, delegation will tend to be less surprising/confusing if it's an internal implementation detail rather than plainly exposed in your API design. We will expound on **delegation** in great detail in the next chapter.
 
