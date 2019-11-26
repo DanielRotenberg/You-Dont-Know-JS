@@ -400,16 +400,16 @@ obj[Symbol.iterator] = function(){ /*..*/ };
 To define your own custom symbols, use the `Symbol(..)` native. The `Symbol(..)` native "constructor" is unique in that you're not allowed to use `new` with it, as doing so will throw an error.
 
 ```js
-var mysym = Symbol( "my own symbol" );
-mysym;				// Symbol(my own symbol)
-mysym.toString();	// "Symbol(my own symbol)"
-typeof mysym; 		// "symbol"
+var somesym = Symbol( "some symbol" );
+somesym;				// Symbol(some symbol)
+somesym.toString();	// "Symbol(some symbol)"
+typeof somesym; 		// "symbol"
 
 var a = { };
-a[mysym] = "foobar";
+a[somesym] = "foobar";
 
 Object.getOwnPropertySymbols( a );
-// [ Symbol(my own symbol) ]
+// [ Symbol(some symbol) ]
 ```
 
 While symbols are not actually private (`Object.getOwnPropertySymbols(..)` reflects on the object and reveals the symbols quite publicly), using them for private or special properties is likely their primary use-case. For most developers, they may take the place of property names with `_` underscore prefixes, which are almost always by convention signals to say, "hey, this is a private/special/internal property, so leave it alone!"
