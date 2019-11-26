@@ -34,7 +34,7 @@ Objects come in two forms: the declarative (literal) form, and the constructed f
 The literal syntax for an object looks like this:
 
 ```js
-var myObj = {
+var someObj = {
 	key: value
 	// ...
 };
@@ -43,8 +43,8 @@ var myObj = {
 The constructed form looks like this:
 
 ```js
-var myObj = new Object();
-myObj.key = value;
+var someObj = new Object();
+someObj.key = value;
 ```
 
 The constructed form and the literal form result in exactly the same sort of object. The only difference really is that you can add one or more key/value pairs to the literal declaration, whereas with constructed-form objects, you must add the properties one-by-one.
@@ -138,13 +138,13 @@ It's important to note that while we say "contents" which implies that these val
 Consider:
 
 ```js
-var myObject = {
+var someObj = {
 	a: 2
 };
 
-myObject.a;		// 2
+someObj.a;		// 2
 
-myObject["a"];	// 2
+someObj["a"];	// 2
 ```
 
 To access the value at the *location* `a` in `myObject`, we need to use either the `.` operator or the `[ ]` operator. The `.a` syntax is usually referred to as "property" access, whereas the `["a"]` syntax is usually referred to as "key" access. In reality, they both access the same *location*, and will pull out the same value, `2`, so the terms can be used interchangeably. We will use the most common term, "property access" from here on.
@@ -155,7 +155,7 @@ Also, since the `[".."]` syntax uses a string's **value** to specify the locatio
 
 ```js
 var wantA = true;
-var myObject = {
+var someObj = {
 	a: 2
 };
 
@@ -167,45 +167,45 @@ if (wantA) {
 
 // later
 
-console.log( myObject[idx] ); // 2
+console.log( someObj[idx] ); // 2
 ```
 
 In objects, property names are **always** strings. If you use any other value besides a `string` (primitive) as the property, it will first be converted to a string. This even includes numbers, which are commonly used as array indexes, so be careful not to confuse the use of numbers between objects and arrays.
 
 ```js
-var myObject = { };
+var someObj = { };
 
-myObject[true] = "foo";
-myObject[3] = "bar";
-myObject[myObject] = "baz";
+someObj[true] = "foo";
+someObj[3] = "bar";
+someObj[myObject] = "baz";
 
-myObject["true"];				// "foo"
-myObject["3"];					// "bar"
-myObject["[object Object]"];	// "baz"
+someObj["true"];				// "foo"
+someObj["3"];					// "bar"
+someObj["[object Object]"];	// "baz"
 ```
 
 ### Computed Property Names
 
-The `myObject[..]` property access syntax we just described is useful if you need to use a computed expression value *as* the key name, like `myObject[prefix + name]`. But that's not really helpful when declaring objects using the object-literal syntax.
+The `someObj[..]` property access syntax we just described is useful if you need to use a computed expression value *as* the key name, like `someObj[prefix + name]`. But that's not really helpful when declaring objects using the object-literal syntax.
 
 ES6 adds *computed property names*, where you can specify an expression, surrounded by a `[ ]` pair, in the key-name position of an object-literal declaration:
 
 ```js
 var prefix = "foo";
 
-var myObject = {
+var someObj = {
 	[prefix + "bar"]: "hello",
 	[prefix + "baz"]: "world"
 };
 
-myObject["foobar"]; // hello
-myObject["foobaz"]; // world
+someObj["foobar"]; // hello
+someObj["foobaz"]; // world
 ```
 
 The most common usage of *computed property names* will probably be for ES6 `Symbol`s, which we will not be covering in detail in this book. In short, they're a new primitive data type which has an opaque unguessable value (technically a `string` value). You will be strongly discouraged from working with the *actual value* of a `Symbol` (which can theoretically be different between different JS engines), so the name of the `Symbol`, like `Symbol.Something` (just a made up name!), will be what you use:
 
 ```js
-var myObject = {
+var someObj = {
 	[Symbol.Something]: "hello world"
 };
 ```
@@ -231,7 +231,7 @@ function foo() {
 
 var someFoo = foo;	// variable reference to `foo`
 
-var myObject = {
+var someObj = {
 	someFoo: foo
 };
 
@@ -239,7 +239,7 @@ foo;				// function foo(){..}
 
 someFoo;			// function foo(){..}
 
-myObject.someFoo;	// function foo(){..}
+someObj.someFoo;	// function foo(){..}
 ```
 
 `someFoo` and `myObject.someFoo` are just two separate references to the same function, and neither implies anything about the function being special or "owned" by any other object. If `foo()` above was defined to have a `this` reference inside it, that `myObject.someFoo` *implicit binding* would be the **only** observable difference between the two references. Neither reference really makes sense to be called a "method".
@@ -253,17 +253,17 @@ The safest conclusion is probably that "function" and "method" are interchangeab
 Even when you declare a function expression as part of the object-literal, that function doesn't magically *belong* more to the object -- still just multiple references to the same function object:
 
 ```js
-var myObject = {
+var someObj = {
 	foo: function foo() {
 		console.log( "foo" );
 	}
 };
 
-var someFoo = myObject.foo;
+var someFoo = someObj.foo;
 
 someFoo;		// function foo(){..}
 
-myObject.foo;	// function foo(){..}
+someObj.foo;	// function foo(){..}
 ```
 
 **Note:** In Chapter 6, we will cover an ES6 short-hand for that `foo: function foo(){ .. }` declaration syntax in our object-literal.
@@ -273,25 +273,25 @@ myObject.foo;	// function foo(){..}
 Arrays also use the `[ ]` access form, but as mentioned above, they have slightly more structured organization for how and where values are stored (though still no restriction on what *type* of values are stored). Arrays assume *numeric indexing*, which means that values are stored in locations, usually called *indices*, at non-negative integers, such as `0` and `42`.
 
 ```js
-var myArray = [ "foo", 42, "bar" ];
+var someArray = [ "foo", 42, "bar" ];
 
-myArray.length;		// 3
+someArray.length;		// 3
 
-myArray[0];			// "foo"
+someArray[0];			// "foo"
 
-myArray[2];			// "bar"
+someArray[2];			// "bar"
 ```
 
 Arrays *are* objects, so even though each index is a positive integer, you can *also* add properties onto the array:
 
 ```js
-var myArray = [ "foo", 42, "bar" ];
+var someArray = [ "foo", 42, "bar" ];
 
-myArray.baz = "baz";
+someArray.baz = "baz";
 
-myArray.length;	// 3
+someArray.length;	// 3
 
-myArray.baz;	// "baz"
+someArray.baz;	// "baz"
 ```
 
 Notice that adding named properties (regardless of `.` or `[ ]` operator syntax) does not change the reported `length` of the array.
@@ -301,13 +301,13 @@ You *could* use an array as a plain key/value object, and never add any numeric 
 **Be careful:** If you try to add a property to an array, but the property name *looks* like a number, it will end up instead as a numeric index (thus modifying the array contents):
 
 ```js
-var myArray = [ "foo", 42, "bar" ];
+var someArray = [ "foo", 42, "bar" ];
 
-myArray["3"] = "baz";
+someArray["3"] = "baz";
 
-myArray.length;	// 4
+someArray.length;	// 4
 
-myArray[3];		// "baz"
+someArray[3];		// "baz"
 ```
 
 ### Duplicating Objects
@@ -325,14 +325,14 @@ var anotherObject = {
 
 var anotherArray = [];
 
-var myObject = {
+var someObject = {
 	a: 2,
 	b: anotherObject,	// reference, not a copy!
 	c: anotherArray,	// another reference!
 	d: anotherFunction
 };
 
-anotherArray.push( anotherObject, myObject );
+anotherArray.push( anotherObject, someObject );
 ```
 
 What exactly should be the representation of a *copy* of `myObject`?
@@ -356,7 +356,7 @@ Of course, that requires you to ensure your object is JSON safe. For some situat
 At the same time, a shallow copy is fairly understandable and has far less issues, so ES6 has now defined `Object.assign(..)` for this task. `Object.assign(..)` takes a *target* object as its first parameter, and one or more *source* objects as its subsequent parameters. It iterates over all the *enumerable* (see below), *owned keys* (**immediately present**) on the *source* object(s) and copies them (via `=` assignment only) to *target*. It also, helpfully, returns *target*, as you can see below:
 
 ```js
-var newObj = Object.assign( {}, myObject );
+var newObj = Object.assign( {}, someObj );
 
 newObj.a;						// 2
 newObj.b === anotherObject;		// true
@@ -375,11 +375,11 @@ But as of ES5, all properties are described in terms of a **property descriptor*
 Consider this code:
 
 ```js
-var myObject = {
+var someObj = {
 	a: 2
 };
 
-Object.getOwnPropertyDescriptor( myObject, "a" );
+Object.getOwnPropertyDescriptor( someObj, "a" );
 // {
 //    value: 2,
 //    writable: true,
@@ -395,16 +395,16 @@ While we can see what the default values for the property descriptor characteris
 For example:
 
 ```js
-var myObject = {};
+var someObj = {};
 
-Object.defineProperty( myObject, "a", {
+Object.defineProperty( someObj, "a", {
 	value: 2,
 	writable: true,
 	configurable: true,
 	enumerable: true
 } );
 
-myObject.a; // 2
+someObj.a; // 2
 ```
 
 Using `defineProperty(..)`, we added the plain, normal `a` property to `myObject` in a manually explicit way. However, you generally wouldn't use this manual approach unless you wanted to modify one of the descriptor characteristics from its normal behavior.
@@ -416,18 +416,18 @@ The ability for you to change the value of a property is controlled by `writable
 Consider:
 
 ```js
-var myObject = {};
+var someObj = {};
 
-Object.defineProperty( myObject, "a", {
+Object.defineProperty( someObj, "a", {
 	value: 2,
 	writable: false, // not writable!
 	configurable: true,
 	enumerable: true
 } );
 
-myObject.a = 3;
+someObj.a = 3;
 
-myObject.a; // 2
+someObj.a; // 2
 ```
 
 As you can see, our modification of the `value` silently failed. If we try in `strict mode`, we get an error:
@@ -435,16 +435,16 @@ As you can see, our modification of the `value` silently failed. If we try in `s
 ```js
 "use strict";
 
-var myObject = {};
+var someObj = {};
 
-Object.defineProperty( myObject, "a", {
+Object.defineProperty( someObj, "a", {
 	value: 2,
 	writable: false, // not writable!
 	configurable: true,
 	enumerable: true
 } );
 
-myObject.a = 3; // TypeError
+someObj.a = 3; // TypeError
 ```
 
 The `TypeError` tells us we cannot change a non-writable property.
@@ -456,25 +456,25 @@ The `TypeError` tells us we cannot change a non-writable property.
 As long as a property is currently configurable, we can modify its descriptor definition, using the same `defineProperty(..)` utility.
 
 ```js
-var myObject = {
+var someObj = {
 	a: 2
 };
 
-myObject.a = 3;
-myObject.a;					// 3
+someObj.a = 3;
+someObj.a;					// 3
 
-Object.defineProperty( myObject, "a", {
+Object.defineProperty( someObj, "a", {
 	value: 4,
 	writable: true,
 	configurable: false,	// not configurable!
 	enumerable: true
 } );
 
-myObject.a;					// 4
-myObject.a = 5;
-myObject.a;					// 5
+someObj.a;					// 4
+someObj.a = 5;
+someObj.a;					// 5
 
-Object.defineProperty( myObject, "a", {
+Object.defineProperty( someObj, "a", {
 	value: 6,
 	writable: true,
 	configurable: true,
@@ -489,24 +489,24 @@ The final `defineProperty(..)` call results in a TypeError, regardless of `stric
 Another thing `configurable:false` prevents is the ability to use the `delete` operator to remove an existing property.
 
 ```js
-var myObject = {
+var someObj = {
 	a: 2
 };
 
-myObject.a;				// 2
-delete myObject.a;
-myObject.a;				// undefined
+someObj.a;				// 2
+delete someObj.a;
+someObj.a;				// undefined
 
-Object.defineProperty( myObject, "a", {
+Object.defineProperty( someObj, "a", {
 	value: 2,
 	writable: true,
 	configurable: false,
 	enumerable: true
 } );
 
-myObject.a;				// 2
-delete myObject.a;
-myObject.a;				// 2
+someObj.a;				// 2
+delete someObj.a;
+someObj.a;				// 2
 ```
 
 As you can see, the last `delete` call failed (silently) because we made the `a` property non-configurable.
@@ -530,12 +530,12 @@ It is sometimes desired to make properties or objects that cannot be changed (ei
 It's important to note that **all** of these approaches create shallow immutability. That is, they affect only the object and its direct property characteristics. If an object has a reference to another object (array, object, function, etc), the *contents* of that object are not affected, and remain mutable.
 
 ```js
-myImmutableObject.foo; // [1,2,3]
-myImmutableObject.foo.push( 4 );
-myImmutableObject.foo; // [1,2,3,4]
+someImmutableObject.foo; // [1,2,3]
+someImmutableObject.foo.push( 4 );
+someImmutableObject.foo; // [1,2,3,4]
 ```
 
-We assume in this snippet that `myImmutableObject` is already created and protected as immutable. But, to also protect the contents of `myImmutableObject.foo` (which is its own object -- array), you would also need to make `foo` immutable, using one or more of the following functionalities.
+We assume in this snippet that `someImmutableObject` is already created and protected as immutable. But, to also protect the contents of `someImmutableObject.foo` (which is its own object -- array), you would also need to make `foo` immutable, using one or more of the following functionalities.
 
 **Note:** It is not terribly common to create deeply entrenched immutable objects in JS programs. Special cases can certainly call for it, but as a general design pattern, if you find yourself wanting to *seal* or *freeze* all your objects, you may want to take a step back and reconsider your program design to be more robust to potential changes in objects' values.
 
@@ -544,9 +544,9 @@ We assume in this snippet that `myImmutableObject` is already created and protec
 By combining `writable:false` and `configurable:false`, you can essentially create a *constant* (cannot be changed, redefined or deleted) as an object property, like:
 
 ```js
-var myObject = {};
+var someObject = {};
 
-Object.defineProperty( myObject, "FAVORITE_NUMBER", {
+Object.defineProperty( someObject, "FAVORITE_NUMBER", {
 	value: 42,
 	writable: false,
 	configurable: false
@@ -558,14 +558,14 @@ Object.defineProperty( myObject, "FAVORITE_NUMBER", {
 If you want to prevent an object from having new properties added to it, but otherwise leave the rest of the object's properties alone, call `Object.preventExtensions(..)`:
 
 ```js
-var myObject = {
+var someObject = {
 	a: 2
 };
 
-Object.preventExtensions( myObject );
+Object.preventExtensions( someObject );
 
-myObject.b = 3;
-myObject.b; // undefined
+someObject.b = 3;
+someObject.b; // undefined
 ```
 
 In `non-strict mode`, the creation of `b` fails silently. In `strict mode`, it throws a `TypeError`.
@@ -592,42 +592,42 @@ There's a subtle, but important, detail about how property accesses are performe
 Consider:
 
 ```js
-var myObject = {
+var someObject = {
 	a: 2
 };
 
-myObject.a; // 2
+someObject.a; // 2
 ```
 
-The `myObject.a` is a property access, but it doesn't *just* look in `myObject` for a property of the name `a`, as it might seem.
+The `someObject.a` is a property access, but it doesn't *just* look in `someObject` for a property of the name `a`, as it might seem.
 
-According to the spec, the code above actually performs a `[[Get]]` operation (kinda like a function call: `[[Get]]()`) on the `myObject`. The default built-in `[[Get]]` operation for an object *first* inspects the object for a property of the requested name, and if it finds it, it will return the value accordingly.
+According to the spec, the code above actually performs a `[[Get]]` operation (kinda like a function call: `[[Get]]()`) on the `someObject`. The default built-in `[[Get]]` operation for an object *first* inspects the object for a property of the requested name, and if it finds it, it will return the value accordingly.
 
 However, the `[[Get]]` algorithm defines other important behavior if it does *not* find a property of the requested name. We will examine in Chapter 5 what happens *next* (traversal of the `[[Prototype]]` chain, if any).
 
 But one important result of this `[[Get]]` operation is that if it cannot through any means come up with a value for the requested property, it instead returns the value `undefined`.
 
 ```js
-var myObject = {
+var someObject = {
 	a: 2
 };
 
-myObject.b; // undefined
+someObject.b; // undefined
 ```
 
 This behavior is different from when you reference *variables* by their identifier names. If you reference a variable that cannot be resolved within the applicable lexical scope look-up, the result is not `undefined` as it is for object properties, but instead a `ReferenceError` is thrown.
 
 ```js
-var myObject = {
+var someObject = {
 	a: undefined
 };
 
-myObject.a; // undefined
+someObject.a; // undefined
 
-myObject.b; // undefined
+someObject.b; // undefined
 ```
 
-From a *value* perspective, there is no difference between these two references -- they both result in `undefined`. However, the `[[Get]]` operation underneath, though subtle at a glance, potentially performed a bit more "work" for the reference `myObject.b` than for the reference `myObject.a`.
+From a *value* perspective, there is no difference between these two references -- they both result in `undefined`. However, the `[[Get]]` operation underneath, though subtle at a glance, potentially performed a bit more "work" for the reference `someObject.b` than for the reference `someObject.a`.
 
 Inspecting only the value results, you cannot distinguish whether a property exists and holds the explicit value `undefined`, or whether the property does *not* exist and `undefined` was the default return value after `[[Get]]` failed to return something explicitly. However, we will see shortly how you *can* distinguish these two scenarios.
 
@@ -660,7 +660,7 @@ When you define a property to have either a getter or a setter or both, its defi
 Consider:
 
 ```js
-var myObject = {
+var someObject = {
 	// define a getter for `a`
 	get a() {
 		return 2;
@@ -668,7 +668,7 @@ var myObject = {
 };
 
 Object.defineProperty(
-	myObject,	// target
+	someObject,	// target
 	"b",		// property name
 	{			// descriptor
 		// define a getter for `b`
@@ -679,24 +679,24 @@ Object.defineProperty(
 	}
 );
 
-myObject.a; // 2
+someObject.a; // 2
 
-myObject.b; // 4
+someObject.b; // 4
 ```
 
 Either through object-literal syntax with `get a() { .. }` or through explicit definition with `defineProperty(..)`, in both cases we created a property on the object that actually doesn't hold a value, but whose access automatically results in a hidden function call to the getter function, with whatever value it returns being the result of the property access.
 
 ```js
-var myObject = {
+var someObject = {
 	// define a getter for `a`
 	get a() {
 		return 2;
 	}
 };
 
-myObject.a = 3;
+someObject.a = 3;
 
-myObject.a; // 2
+someObject.a; // 2
 ```
 
 Since we only defined a getter for `a`, if we try to set the value of `a` later, the set operation won't throw an error but will just silently throw the assignment away. Even if there was a valid setter, our custom getter is hard-coded to return only `2`, so the set operation would be moot.
@@ -704,7 +704,7 @@ Since we only defined a getter for `a`, if we try to set the value of `a` later,
 To make this scenario more sensible, properties should also be defined with setters, which override the default `[[Put]]` operation (aka, assignment), per-property, just as you'd expect. You will almost certainly want to always declare both getter and setter (having only one or the other often leads to unexpected/surprising behavior):
 
 ```js
-var myObject = {
+var someObject = {
 	// define a getter for `a`
 	get a() {
 		return this._a_;
@@ -716,36 +716,36 @@ var myObject = {
 	}
 };
 
-myObject.a = 2;
+someObject.a = 2;
 
-myObject.a; // 4
+someObject.a; // 4
 ```
 
 **Note:** In this example, we actually store the specified value `2` of the assignment (`[[Put]]` operation) into another variable `_a_`. The `_a_` name is purely by convention for this example and implies nothing special about its behavior -- it's a normal property like any other.
 
 ### Existence
 
-We showed earlier that a property access like `myObject.a` may result in an `undefined` value if either the explicit `undefined` is stored there or the `a` property doesn't exist at all. So, if the value is the same in both cases, how else do we distinguish them?
+We showed earlier that a property access like `someObject.a` may result in an `undefined` value if either the explicit `undefined` is stored there or the `a` property doesn't exist at all. So, if the value is the same in both cases, how else do we distinguish them?
 
 We can ask an object if it has a certain property *without* asking to get that property's value:
 
 ```js
-var myObject = {
+var someObject = {
 	a: 2
 };
 
-("a" in myObject);				// true
-("b" in myObject);				// false
+("a" in someObject);				// true
+("b" in someObject);				// false
 
-myObject.hasOwnProperty( "a" );	// true
-myObject.hasOwnProperty( "b" );	// false
+someObject.hasOwnProperty( "a" );	// true
+someObject.hasOwnProperty( "b" );	// false
 ```
 
-The `in` operator will check to see if the property is *in* the object, or if it exists at any higher level of the `[[Prototype]]` chain object traversal (see Chapter 5). By contrast, `hasOwnProperty(..)` checks to see if *only* `myObject` has the property or not, and will *not* consult the `[[Prototype]]` chain. We'll come back to the important differences between these two operations in Chapter 5 when we explore `[[Prototype]]`s in detail.
+The `in` operator will check to see if the property is *in* the object, or if it exists at any higher level of the `[[Prototype]]` chain object traversal (see Chapter 5). By contrast, `hasOwnProperty(..)` checks to see if *only* `someObject` has the property or not, and will *not* consult the `[[Prototype]]` chain. We'll come back to the important differences between these two operations in Chapter 5 when we explore `[[Prototype]]`s in detail.
 
-`hasOwnProperty(..)` is accessible for all normal objects via delegation to `Object.prototype` (see Chapter 5). But it's possible to create an object that does not link to `Object.prototype` (via `Object.create(null)` -- see Chapter 5). In this case, a method call like `myObject.hasOwnProperty(..)` would fail.
+`hasOwnProperty(..)` is accessible for all normal objects via delegation to `Object.prototype` (see Chapter 5). But it's possible to create an object that does not link to `Object.prototype` (via `Object.create(null)` -- see Chapter 5). In this case, a method call like `someObject.hasOwnProperty(..)` would fail.
 
-In that scenario, a more robust way of performing such a check is `Object.prototype.hasOwnProperty.call(myObject,"a")`, which borrows the base `hasOwnProperty(..)` method and uses *explicit `this` binding* (see Chapter 2) to apply it against our `myObject`.
+In that scenario, a more robust way of performing such a check is `Object.prototype.hasOwnProperty.call(someObject,"a")`, which borrows the base `hasOwnProperty(..)` method and uses *explicit `this` binding* (see Chapter 2) to apply it against our `someObject`.
 
 **Note:** The `in` operator has the appearance that it will check for the existence of a *value* inside a container, but it actually checks for the existence of a property name. This difference is important to note with respect to arrays, as the temptation to try a check like `4 in [2, 4, 6]` is strong, but this will not behave as expected.
 
@@ -754,62 +754,62 @@ In that scenario, a more robust way of performing such a check is `Object.protot
 Previously, we explained briefly the idea of "enumerability" when we looked at the `enumerable` property descriptor characteristic. Let's revisit that and examine it in more close detail.
 
 ```js
-var myObject = { };
+var someObject = { };
 
 Object.defineProperty(
-	myObject,
+	someObject,
 	"a",
 	// make `a` enumerable, as normal
 	{ enumerable: true, value: 2 }
 );
 
 Object.defineProperty(
-	myObject,
+	someObject,
 	"b",
 	// make `b` NON-enumerable
 	{ enumerable: false, value: 3 }
 );
 
-myObject.b; // 3
-("b" in myObject); // true
-myObject.hasOwnProperty( "b" ); // true
+someObject.b; // 3
+("b" in someObject); // true
+someObject.hasOwnProperty( "b" ); // true
 
 // .......
 
-for (var k in myObject) {
-	console.log( k, myObject[k] );
+for (var k in someObject) {
+	console.log( k, someObject[k] );
 }
 // "a" 2
 ```
 
-You'll notice that `myObject.b` in fact **exists** and has an accessible value, but it doesn't show up in a `for..in` loop (though, surprisingly, it **is** revealed by the `in` operator existence check). That's because "enumerable" basically means "will be included if the object's properties are iterated through".
+You'll notice that `someObject.b` in fact **exists** and has an accessible value, but it doesn't show up in a `for..in` loop (though, surprisingly, it **is** revealed by the `in` operator existence check). That's because "enumerable" basically means "will be included if the object's properties are iterated through".
 
 **Note:** `for..in` loops applied to arrays can give somewhat unexpected results, in that the enumeration of an array will include not only all the numeric indices, but also any enumerable properties. It's a good idea to use `for..in` loops *only* on objects, and traditional `for` loops with numeric index iteration for the values stored in arrays.
 
 Another way that enumerable and non-enumerable properties can be distinguished:
 
 ```js
-var myObject = { };
+var someObject = { };
 
 Object.defineProperty(
-	myObject,
+	someObject,
 	"a",
 	// make `a` enumerable, as normal
 	{ enumerable: true, value: 2 }
 );
 
 Object.defineProperty(
-	myObject,
+	someObject,
 	"b",
 	// make `b` non-enumerable
 	{ enumerable: false, value: 3 }
 );
 
-myObject.propertyIsEnumerable( "a" ); // true
-myObject.propertyIsEnumerable( "b" ); // false
+someObject.propertyIsEnumerable( "a" ); // true
+someObject.propertyIsEnumerable( "b" ); // false
 
-Object.keys( myObject ); // ["a"]
-Object.getOwnPropertyNames( myObject ); // ["a", "b"]
+Object.keys( someObject ); // ["a"]
+Object.getOwnPropertyNames( someObject ); // ["a", "b"]
 ```
 
 `propertyIsEnumerable(..)` tests whether the given property name exists *directly* on the object and is also `enumerable:true`.
@@ -827,15 +827,15 @@ The `for..in` loop iterates over the list of enumerable properties on an object 
 With numerically-indexed arrays, iterating over the values is typically done with a standard `for` loop, like:
 
 ```js
-var myArray = [1, 2, 3];
+var someArray = [1, 2, 3];
 
-for (var i = 0; i < myArray.length; i++) {
-	console.log( myArray[i] );
+for (var i = 0; i < someArray.length; i++) {
+	console.log( someArray[i] );
 }
 // 1 2 3
 ```
 
-This isn't iterating over the values, though, but iterating over the indices, where you then use the index to reference the value, as `myArray[i]`.
+This isn't iterating over the values, though, but iterating over the indices, where you then use the index to reference the value, as `someArray[i]`.
 
 ES5 also added several iteration helpers for arrays, including `forEach(..)`, `every(..)`, and `some(..)`. Each of these helpers accepts a function callback to apply to each element in the array, differing only in how they respectively respond to a return value from the callback.
 
@@ -850,9 +850,9 @@ If you iterate on an object with a `for..in` loop, you're also only getting at t
 But what if you want to iterate over the values directly instead of the array indices (or object properties)? Helpfully, ES6 adds a `for..of` loop syntax for iterating over arrays (and objects, if the object defines its own custom iterator):
 
 ```js
-var myArray = [ 1, 2, 3 ];
+var someArray = [ 1, 2, 3 ];
 
-for (var v of myArray) {
+for (var v of someArray) {
 	console.log( v );
 }
 // 1
@@ -885,12 +885,12 @@ While arrays do automatically iterate in `for..of` loops, regular objects **do n
 It *is* possible to define your own default `@@iterator` for any object that you care to iterate over. For example:
 
 ```js
-var myObject = {
+var someObject = {
 	a: 2,
 	b: 3
 };
 
-Object.defineProperty( myObject, Symbol.iterator, {
+Object.defineProperty( someObject, Symbol.iterator, {
 	enumerable: false,
 	writable: false,
 	configurable: true,
@@ -909,23 +909,23 @@ Object.defineProperty( myObject, Symbol.iterator, {
 	}
 } );
 
-// iterate `myObject` manually
-var it = myObject[Symbol.iterator]();
+// iterate `someObject` manually
+var it = someObject[Symbol.iterator]();
 it.next(); // { value:2, done:false }
 it.next(); // { value:3, done:false }
 it.next(); // { value:undefined, done:true }
 
-// iterate `myObject` with `for..of`
-for (var v of myObject) {
+// iterate `someObject` with `for..of`
+for (var v of someObject) {
 	console.log( v );
 }
 // 2
 // 3
 ```
 
-**Note:** We used `Object.defineProperty(..)` to define our custom `@@iterator` (mostly so we could make it non-enumerable), but using the `Symbol` as a *computed property name* (covered earlier in this chapter), we could have declared it directly, like `var myObject = { a:2, b:3, [Symbol.iterator]: function(){ /* .. */ } }`.
+**Note:** We used `Object.defineProperty(..)` to define our custom `@@iterator` (mostly so we could make it non-enumerable), but using the `Symbol` as a *computed property name* (covered earlier in this chapter), we could have declared it directly, like `var someObject = { a:2, b:3, [Symbol.iterator]: function(){ /* .. */ } }`.
 
-Each time the `for..of` loop calls `next()` on `myObject`'s iterator object, the internal pointer will advance and return back the next value from the object's properties list (see a previous note about iteration ordering on object properties/values).
+Each time the `for..of` loop calls `next()` on `someObject`'s iterator object, the internal pointer will advance and return back the next value from the object's properties list (see a previous note about iteration ordering on object properties/values).
 
 The iteration we just demonstrated is a simple value-by-value iteration, but you can of course define arbitrarily complex iterations for your custom data structures, as you see fit. Custom iterators combined with ES6's `for..of` loop are a powerful new syntactic tool for manipulating user-defined objects.
 
