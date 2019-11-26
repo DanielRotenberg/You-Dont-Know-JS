@@ -90,7 +90,7 @@ w1.postMessage( "something cool to say" );
 Inside the Worker, the messaging is totally symmetrical:
 
 ```js
-// "mycoolworker.js"
+// "somecoolworker.js"
 
 addEventListener( "message", function(evt){
 	// evt.data
