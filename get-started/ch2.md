@@ -207,7 +207,7 @@ if (birthday) {
 }
 ```
 
-The `myBirthday` constant is not allowed to be re-assigned.
+The `birthday` constant is not allowed to be re-assigned.
 
 `const` declared variables are not "unchangeable", they just cannot be re-assigned. It's ill-advised to use `const` with object values, because those values can still be changed even though the variable can't be re-assigned. This leads to potential confusion down the line, so I think it's wise to avoid situations like:
 
