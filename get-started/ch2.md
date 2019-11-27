@@ -198,12 +198,12 @@ A third declaration form is `const`. It's like `let` but has an additional limit
 Consider:
 
 ```js
-const myBirthday = true;
+const birthday = true;
 let age = 39;
 
-if (myBirthday) {
+if (birthday) {
     age = age + 1;    // OK!
-    myBirthday = false;  // Error!
+    birthday = false;  // Error!
 }
 ```
 
