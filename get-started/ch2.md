@@ -219,7 +219,7 @@ actors[2] = "Tom Cruise";   // OK :(
 actors = [];                // Error!
 ```
 
-The best semantic use of a `const` is when you have a simple primitive value that you want to give a useful name to, such as using `myBirthday` instead of `true`. This makes programs easier to read.
+The best semantic use of a `const` is when you have a simple primitive value that you want to give a useful name to, such as using `birthday` instead of `true`. This makes programs easier to read.
 
 | TIP: |
 | :--- |
